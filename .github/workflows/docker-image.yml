@@ -14,8 +14,8 @@ jobs:
     
     - name: install deps
       run: |
-        apt-get update
-        apt-get install --yes git wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev libc++-7-dev libc++abi-7-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
+        sudo apt-get update
+        sudo apt-get install --yes git wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev libc++-7-dev libc++abi-7-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
         rm -rf /var/lib/apt/lists/*
         
     - name: install pyenv
@@ -30,21 +30,22 @@ jobs:
     - name: Install cmake 22
       working-directory: /
       run: |
-        wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
-        sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/ --exclude-subdir --skip-license
+        sudo wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
+        sudo sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/ --exclude-subdir --skip-license
         echo "PATH=/bin:$PATH" >> $GITHUB_ENV
 
     - name: clone open3d
+      working-directory: $HOME
       run: |
-        git clone https://github.com/isl-org/Open3D.git /open3d
-        mkdir /open3d/build
+        git clone https://github.com/isl-org/Open3D.git open3d
+        mkdir $HOME/open3d/build
       
     - name: cmake
-      working-directory: /open3d/build
+      working-directory: $HOME/open3d/build
       run: cmake -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release ..
         
     - name: make
-      working-directory: /open3d/build
+      working-directory: $HOME/open3d/build
       run: make -j python-package
       
     - name: tar the release
