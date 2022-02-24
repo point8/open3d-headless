@@ -34,21 +34,21 @@ jobs:
         echo "PATH=/bin:$PATH" >> $GITHUB_ENV
 
     - name: clone open3d
-      working-directory: $HOME
       run: |
         git clone https://github.com/isl-org/Open3D.git open3d
-        mkdir $HOME/open3d/build
+        mkdir open3d/build
       
     - name: cmake
-      working-directory: $HOME/open3d/build
+      working-directory: open3d/build
       run: cmake -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release ..
         
     - name: make
-      working-directory: $HOME/open3d/build
+      working-directory: open3d/build
       run: make -j python-package
       
     - name: tar the release
-      run: tar -zcf open3d-headless.tar.gz lib
+      working-directory: open3d/build
+      run: tar -zcf $HOME/open3d-headless.tar.gz lib
       
     - name: Create Release
       id: create_release
@@ -66,7 +66,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        file: "open3d-headless.tar.gz "
+        file: "$HOME/open3d-headless.tar.gz "
         release_id: ${{ steps.create_release.outputs.id }}
         overwrite: true
         verbose: true
