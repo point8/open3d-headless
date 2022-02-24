@@ -20,7 +20,7 @@ jobs:
     - name: install pyenv
       run: |
         wget -q -O - https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
-        echo "PATH=/root/.pyenv/bin/:$PATH" >> $GITHUB_ENV
+        echo "PATH=$HOME/.pyenv/bin/:$PATH" >> $GITHUB_ENV
         pyenv install 3.9.7
         eval "$(pyenv virtualenv-init --path -)" && pyenv global 3.9.7
         PATH="/root/.pyenv/shims:${PATH}"
