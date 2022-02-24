@@ -44,7 +44,7 @@ jobs:
         
     - name: make
       working-directory: open3d/build
-      run: make -j python-package
+      run: make -j4 python-package
       
     - name: tar the release
       working-directory: open3d/build
