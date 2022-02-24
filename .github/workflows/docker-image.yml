@@ -16,7 +16,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install --yes git wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev libc++-7-dev libc++abi-7-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
-        rm -rf /var/lib/apt/lists/*
         
     - name: install pyenv
       run: |
@@ -28,7 +27,6 @@ jobs:
         pip install numpy
       
     - name: Install cmake 22
-      working-directory: /
       run: |
         sudo wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
         sudo sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/ --exclude-subdir --skip-license
