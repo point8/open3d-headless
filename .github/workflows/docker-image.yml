@@ -49,8 +49,7 @@ jobs:
     - name: tar the release
       working-directory: open3d/build
       run: | 
-        tar -zcf $HOME/open3d-headless.tar.gz lib
-        cp $HOME/open3d-headless.tar.gz $HOME
+        tar -zcf $HOME/open3d-headless.tar.gz lib/python_package
       
     - name: Create Release
       id: create_release
