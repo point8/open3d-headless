@@ -1,0 +1,60 @@
+name: Docker Image CI
+
+on: push
+
+jobs:
+
+  build_and_make_release:
+    # Only run this job when pusshing a new tag
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: install deps
+      run: |
+        sudo apt-get update
+        sudo apt-get install --yes git wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev libc++-7-dev libc++abi-7-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
+        
+    - name: install pyenv
+      run: |
+        wget -q -O - https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
+        echo "PATH=$HOME/.pyenv/bin/:$PATH" >> $GITHUB_ENV
+        source $GITHUB_ENV
+        pyenv install 3.9.7
+        eval "$(pyenv virtualenv-init --path -)" && pyenv global 3.9.7
+        PATH="/root/.pyenv/shims:${PATH}"
+        pip install numpy
+      
+    - name: Install cmake 22
+      run: |
+        sudo wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
+        sudo sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/ --exclude-subdir --skip-license
+        echo "PATH=/bin:$PATH" >> $GITHUB_ENV
+
+    - name: clone open3d
+      run: |
+        git clone https://github.com/isl-org/Open3D.git open3d
+        mkdir open3d/build
+      
+    - name: cmake
+      working-directory: open3d/build
+      run: cmake -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release ..
+        
+    - name: make
+      working-directory: open3d/build
+      run: make -j6 python-package
+      
+    - name: tar the release
+      working-directory: open3d/build
+      run: | 
+        tar -zcf $HOME/open3d-headless.tar.gz lib/python_package
+      
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v0.1.14
+      with:
+        files: open3d-headless.tar.gz
