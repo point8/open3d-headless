@@ -6,7 +6,8 @@ on:
 jobs:
 
   build:
-
+    permissions:
+      contents: write
     runs-on: ubuntu-18.04
 
     steps:
@@ -53,22 +54,6 @@ jobs:
       
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      uses: softprops/action-gh-release@v0.1.14
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Test upload-to-github-release works with ```actions/create-release```
-        draft: true
-        prerelease: false
-    - uses: xresloader/upload-to-github-release@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        file: "open3d-headless.tar.gz"
-        release_id: ${{ steps.create_release.outputs.id }}
-        overwrite: true
-        verbose: true
-    
+        files: open3d-headless.tar.gz
