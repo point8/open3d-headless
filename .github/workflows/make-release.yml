@@ -49,9 +49,9 @@ jobs:
       run: make -j6 python-package
 
     - name: tar the release
-      working-directory: open3d/build
       run: |
-        tar -zcf $HOME/open3d-headless.tar.gz lib/python_package
+        tar -zcf open3d-headless.tar.gz open3d/build/lib/python_package
+        pwd
 
     - name: Create Release
       id: create_release
@@ -59,3 +59,5 @@ jobs:
       with:
         files: |
           open3d-headless.tar.gz
+        tag_name: v0.1
+        name: v0.1
