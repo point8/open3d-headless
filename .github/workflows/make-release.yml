@@ -61,4 +61,4 @@ jobs:
         files: |
           open3d-headless.tar.gz
         tag_name: ${{env.OPEN3D_VERSION}}
-        name: ${{OPEN3D_VERSION}}
+        name: ${{env.OPEN3D_VERSION}}
