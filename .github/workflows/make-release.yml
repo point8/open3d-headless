@@ -5,8 +5,6 @@ on: workflow_dispatch
 jobs:
 
   build_and_make_release:
-    # Only run this job when pusshing a new tag
-    if: startsWith(github.ref, 'refs/tags/')
     permissions:
       contents: write
     runs-on: ubuntu-18.04
