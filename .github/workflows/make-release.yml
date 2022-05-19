@@ -39,6 +39,7 @@ jobs:
       run: |
         git clone https://github.com/isl-org/Open3D.git open3d
         mkdir open3d/build
+        echo OPEN3D_VERSION=`git tag --sort='version:refname' | tail -n 1` >> $GITHUB_ENV
 
     - name: cmake
       working-directory: open3d/build
@@ -59,5 +60,5 @@ jobs:
       with:
         files: |
           open3d-headless.tar.gz
-        tag_name: v0.1
-        name: v0.1
+        tag_name: ${{env.OPEN3D_VERSION}}
+        name: ${{OPEN3D_VERSION}}
