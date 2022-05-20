@@ -1,7 +1,8 @@
 name: Docker Image CI
 
-on: workflow_dispatch
-
+on:
+  schedule:
+    - cron: "30 12 ? * MON"
 jobs:
 
   build_and_make_release:
