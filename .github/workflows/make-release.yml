@@ -1,8 +1,11 @@
 name: Docker Image CI
 
-on:
-  schedule:
-    - cron: "30 12 ? * MON"
+on: workflow_dispatch
+
+# on:
+#   schedule:
+#     - cron: "30 12 ? * MON"
+
 jobs:
 
   build_and_make_release:
@@ -16,7 +19,7 @@ jobs:
     - name: install deps
       run: |
         sudo apt-get update
-        sudo apt-get install --yes git wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev libc++-7-dev libc++abi-7-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
+        sudo apt-get install --yes git gcc g++ wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev libc++-7-dev libc++abi-7-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
 
     - name: install pyenv
       run: |
