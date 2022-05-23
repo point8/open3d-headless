@@ -46,11 +46,15 @@ jobs:
 
     - name: cmake
       working-directory: open3d/build
-      run: cmake -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release ..
+      run: cmake -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTHON_MODULE=ON -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release ..
 
-    - name: make
+    - name: compile
       working-directory: open3d/build
       run: make -j6 python-package
+
+    - name: make release
+      working-directory: open3d/build
+      run: make python-package && make pip-package
 
     - name: tar the release
       run: |
