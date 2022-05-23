@@ -52,10 +52,6 @@ jobs:
       working-directory: open3d/build
       run: make -j6 python-package
 
-    - name: make release
-      working-directory: open3d/build
-      run: make python-package && make pip-package
-
     - name: tar the release
       run: |
         tar -zcf open3d-headless.tar.gz open3d/build/lib/python_package
