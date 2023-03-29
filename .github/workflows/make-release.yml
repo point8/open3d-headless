@@ -33,7 +33,7 @@ jobs:
         echo python: DONE
         # Install Cmake 22
         wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
-        cmkdir cmake
+        mkdir /cmake
         sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/cmake --exclude-subdir --skip-license
         ln -s /cmake/bin/* /bin
         echo cmake: DONE
