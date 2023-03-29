@@ -11,50 +11,41 @@ jobs:
   build_and_make_release:
     permissions:
       contents: write
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: install deps
+# Running different steps makes it very hard to run locally.
+    - name: Do everything.
       run: |
-        sudo apt-get update
-        sudo apt-get install --yes git gcc g++ wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev libc++-7-dev libc++abi-7-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
-
-    - name: install pyenv
-      run: |
+        # Insall deps
+        apt-get update
+        apt-get install --yes git gcc g++ wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
+        # Install & configure Pyenv
         wget -q -O - https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
-        echo "PATH=$HOME/.pyenv/bin/:$PATH" >> $GITHUB_ENV
-        source $GITHUB_ENV
-        pyenv install 3.9.7
-        eval "$(pyenv virtualenv-init --path -)" && pyenv global 3.9.7
-        PATH="/root/.pyenv/shims:${PATH}"
-        pip install numpy
-
-    - name: Install cmake 22
-      run: |
-        sudo wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
-        sudo sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/ --exclude-subdir --skip-license
-        echo "PATH=/bin:$PATH" >> $GITHUB_ENV
-
-    - name: clone open3d
-      run: |
+        export PYENV_ROOT="$HOME/.pyenv"
+        command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+        eval "$(pyenv init -)"
+        pyenv install 3.10.2
+        eval "$(pyenv virtualenv-init --path -)"
+        pyenv global 3.10.2
+        pip -qqq install numpy
+        # Install Cmake 22
+        wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
+        mkdir cmake
+        sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/cmake --exclude-subdir --skip-license
+        ln -s /cmake/bin/* /bin
+        # clone Open3d
         git clone https://github.com/isl-org/Open3D.git open3d
-        mkdir open3d/build
-        cd open3d
-        echo OPEN3D_VERSION=`git tag --sort='version:refname' | tail -n 1` >> $GITHUB_ENV
-
-    - name: cmake
-      working-directory: open3d/build
-      run: cmake -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTHON_MODULE=ON -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release ..
-
-    - name: compile
-      working-directory: open3d/build
-      run: make -j6 python-package
-
-    - name: tar the release
-      run: |
-        tar -zcf open3d-headless.tar.gz open3d/build/lib/python_package
+        pushd open3d
+        # Make Open3d
+        cmake -B build -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTHON_MODULE=ON -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release
+        pushd build
+        make -j6 python-package
+        popd
+        popd
+        # Make a release
+        tar -zcf open3d-headless.tar.gz /open3d/build/lib/python_package
         pwd
 
     - name: Create Release
