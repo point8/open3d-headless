@@ -47,9 +47,9 @@ jobs:
         cd build
         make -j6 python-package
         echo Compilation: DONE
-        cd /
+        cd ../../
         # Make a release
-        tar -zcf open3d-headless.tar.gz /open3d/build/lib/python_package
+        tar -zcf open3d-headless.tar.gz open3d/build/lib/python_package
         echo TAR: DONE
         pwd
 
