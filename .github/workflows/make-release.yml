@@ -12,6 +12,7 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-22.04
+    container: ubuntu:22.04
 
     steps:
     - uses: actions/checkout@v2
