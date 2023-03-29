@@ -34,9 +34,10 @@ jobs:
         echo python: DONE
         # Install Cmake 22
         wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
-        mkdir /cmake
+        sudo mkdir /cmake
+        sudo chmod a+rwt /cmake
         sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/cmake --exclude-subdir --skip-license
-        ln -s /cmake/bin/* /bin
+        sudo ln -s /cmake/bin/* /bin
         echo cmake: DONE
         # clone Open3d
         git clone https://github.com/isl-org/Open3D.git open3d
