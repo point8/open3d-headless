@@ -15,14 +15,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - using: 'docker'
-    - image: 'docker://ubuntu:22.04'
 # Running different steps makes it very hard to run locally.
     - name: Do everything.
       run: |
         # Insall deps
-        apt-get update
-        apt-get install --yes git gcc g++ wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
+        sudo apt-get update
+        sudo apt-get install --yes git gcc g++ wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
         # Install & configure Pyenv
         wget -q -O - https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
         export PYENV_ROOT="$HOME/.pyenv"
@@ -35,7 +33,7 @@ jobs:
         echo python: DONE
         # Install Cmake 22
         wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
-        mkdir cmake
+        cmkdir cmake
         sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/cmake --exclude-subdir --skip-license
         ln -s /cmake/bin/* /bin
         echo cmake: DONE
