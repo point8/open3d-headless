@@ -41,14 +41,13 @@ jobs:
         # clone Open3d
         git clone https://github.com/isl-org/Open3D.git open3d
         echo Cloning: DONE
-        pushd open3d
+        cd open3d
         # Make Open3d
         cmake -B build -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTHON_MODULE=ON -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release
-        pushd build
+        cd build
         make -j6 python-package
         echo Compilation: DONE
-        popd
-        popd
+        cd /
         # Make a release
         tar -zcf open3d-headless.tar.gz /open3d/build/lib/python_package
         echo TAR: DONE
