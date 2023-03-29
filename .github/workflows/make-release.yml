@@ -40,6 +40,7 @@ jobs:
         echo cmake: DONE
         # clone Open3d
         git clone https://github.com/isl-org/Open3D.git open3d
+        echo OPEN3D_VERSION=`git tag --sort='version:refname' | tail -n 1` >> $GITHUB_ENV
         echo Cloning: DONE
         cd open3d
         # Make Open3d
