@@ -19,8 +19,8 @@ jobs:
     - name: Do everything.
       run: |
         # Insall deps
-        apt-get update
-        apt-get install --yes git gcc g++ wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
+        sudo apt-get update
+        sudo apt-get install --yes git gcc g++ wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
         # Install & configure Pyenv
         wget -q -O - https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
         export PYENV_ROOT="$HOME/.pyenv"
@@ -30,22 +30,27 @@ jobs:
         eval "$(pyenv virtualenv-init --path -)"
         pyenv global 3.10.2
         pip -qqq install numpy
+        echo python: DONE
         # Install Cmake 22
         wget -q https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh
         mkdir cmake
         sh ./cmake-3.22.2-linux-x86_64.sh --prefix=/cmake --exclude-subdir --skip-license
         ln -s /cmake/bin/* /bin
+        echo cmake: DONE
         # clone Open3d
         git clone https://github.com/isl-org/Open3D.git open3d
+        echo Cloning: DONE
         pushd open3d
         # Make Open3d
         cmake -B build -DENABLE_HEADLESS_RENDERING=ON -DBUILD_WEBRTC=OFF -DBUILD_GUI=OFF -DUSE_SYSTEM_GLEW=OFF -DUSE_SYSTEM_GLFW=OFF -DPYTHON_EXECUTABLE=$(pyenv prefix)/bin/python -DBUILD_CUDA_MODULE=OFF -DBUILD_PYTHON_MODULE=ON -DBUILD_PYTORCH_OPS=OFF -DBUILD_TENSORFLOW_OPS=OFF -DBUNDLE_OPEN3D_ML=OFF -DCMAKE_BUILD_TYPE=Release
         pushd build
         make -j6 python-package
+        echo Compilation: DONE
         popd
         popd
         # Make a release
         tar -zcf open3d-headless.tar.gz /open3d/build/lib/python_package
+        echo TAR: DONE
         pwd
 
     - name: Create Release
