@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Compile Open3d Headless
 
 on: workflow_dispatch
 
