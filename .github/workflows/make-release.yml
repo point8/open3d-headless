@@ -20,6 +20,8 @@ jobs:
     - name: Do everything.
       run: |
         # Insall deps
+        echo OPEN3D_VERSION="BOUS_VERSION" >> $GITHUB_ENV
+        exit 0
         apt-get update
         apt-get install --yes git gcc g++ wget python3.6 python3-pip libosmesa6-dev xorg-dev libglu1-mesa-dev python3-dev libsdl2-dev ninja-build libxi-dev libtbb-dev libosmesa6-dev libudev-dev autoconf libssl-dev libtool
         # Install & configure Pyenv
