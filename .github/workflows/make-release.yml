@@ -50,7 +50,8 @@ jobs:
         echo Compilation: DONE
         # Make a release
         cd ../../
-        tar -zcf open3d-headless.tar.gz open3d/build/lib/python_package
+        mv open3d/build/lib/python_package open3d
+        tar -zcf open3d-headless.tar.gz open3d
         echo TAR: DONE
         pwd
 
